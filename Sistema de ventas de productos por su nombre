@@ -1,0 +1,246 @@
+Aquí tienes el código modificado para que el cliente pueda seleccionar los productos ingresando el nombre del producto en lugar de elegirlos por número. El sistema verificará si el nombre ingresado coincide con un producto disponible y, si es correcto, lo agregará a la lista de compras del cliente.
+
+Código Modificado
+java
+Copiar código
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+// Clase Producto
+public class Producto {
+    private String nombre;
+    private double precio;
+
+    public Producto(String nombre, double precio) {
+        this.nombre = nombre;
+        this.precio = precio;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public double getPrecio() {
+        return precio;
+    }
+
+    @Override
+    public String toString() {
+        return nombre + ": S/" + precio;
+    }
+}
+
+// Clase Cliente
+class Cliente {
+    private String nombre;
+    private String dni;
+
+    public Cliente(String nombre, String dni) {
+        this.nombre = nombre;
+        this.dni = dni;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getDni() {
+        return dni;
+    }
+}
+
+// Subclase Electronica
+class Electronica extends Producto {
+    public Electronica(String nombre, double precio) {
+        super(nombre, precio);
+    }
+
+    public String getCategoria() {
+        return "Electrónica";
+    }
+}
+
+// Subclase Ropa
+class Ropa extends Producto {
+    public Ropa(String nombre, double precio) {
+        super(nombre, precio);
+    }
+
+    public String getCategoria() {
+        return "Ropa";
+    }
+}
+
+// Subclase Libros
+class Libros extends Producto {
+    public Libros(String nombre, double precio) {
+        super(nombre, precio);
+    }
+
+    public String getCategoria() {
+        return "Libros";
+    }
+}
+
+// Subclase Juguetes
+class Juguetes extends Producto {
+    public Juguetes(String nombre, double precio) {
+        super(nombre, precio);
+    }
+
+    public String getCategoria() {
+        return "Juguetes";
+    }
+}
+
+// Subclase Hogar
+class Hogar extends Producto {
+    public Hogar(String nombre, double precio) {
+        super(nombre, precio);
+    }
+
+    public String getCategoria() {
+        return "Hogar";
+    }
+}
+
+// Clase principal TiendaVirtual
+public class TiendaVirtual {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Entrada de datos del cliente
+        System.out.print("Ingrese su nombre: ");
+        String nombreCliente = scanner.nextLine();
+        System.out.print("Ingrese su DNI: ");
+        String dniCliente = scanner.nextLine();
+        
+        Cliente cliente = new Cliente(nombreCliente, dniCliente);
+
+        // Listado de productos
+        List<Producto> productos = new ArrayList<>();
+        productos.add(new Electronica("Laptop", 1500.00));
+        productos.add(new Electronica("Smartphone", 800.00));
+        productos.add(new Ropa("Camisa", 50.00));
+        productos.add(new Ropa("Pantalón", 100.00));
+        productos.add(new Libros("Java para principiantes", 30.00));
+        productos.add(new Libros("Programación avanzada", 45.00));
+        productos.add(new Juguetes("Lego", 60.00));
+        productos.add(new Hogar("Silla", 200.00));
+
+        // Mostrar productos disponibles
+        System.out.println("\nProductos disponibles:");
+        for (Producto producto : productos) {
+            System.out.println(producto);
+        }
+
+        // Lista para almacenar los productos seleccionados por el cliente
+        List<Producto> carrito = new ArrayList<>();
+        
+        // Proceso de compra
+        String productoElegido;
+        boolean continuarComprando = true;
+        
+        while (continuarComprando && carrito.size() < 6) {
+            System.out.print("\nIngrese el nombre del producto que desea comprar (o escriba 'salir' para terminar): ");
+            productoElegido = scanner.nextLine().trim();
+            
+            if (productoElegido.equalsIgnoreCase("salir")) {
+                continuarComprando = false;
+                break;
+            }
+
+            // Buscar el producto por nombre
+            boolean productoEncontrado = false;
+            for (Producto producto : productos) {
+                if (producto.getNombre().equalsIgnoreCase(productoElegido)) {
+                    carrito.add(producto);
+                    System.out.println("Producto agregado al carrito: " + producto.getNombre());
+                    productoEncontrado = true;
+                    break;
+                }
+            }
+            
+            if (!productoEncontrado) {
+                System.out.println("Producto no encontrado. Inténtelo nuevamente.");
+            }
+
+            if (carrito.size() >= 6) {
+                System.out.println("Has alcanzado el límite de 6 productos.");
+            }
+        }
+
+        // Calcular el total a pagar con IGV (18%)
+        double total = 0;
+        for (Producto producto : carrito) {
+            total += producto.getPrecio();
+        }
+        double igv = total * 0.18;
+        double totalConIgv = total + igv;
+
+        // Mostrar recibo
+        System.out.println("\nRecibo de pago:");
+        System.out.println("Cliente: " + cliente.getNombre() + " - DNI: " + cliente.getDni());
+        System.out.println("Productos comprados:");
+        for (Producto producto : carrito) {
+            System.out.println("- " + producto);
+        }
+        System.out.println("Subtotal: S/" + total);
+        System.out.println("IGV (18%): S/" + igv);
+        System.out.println("Total a pagar: S/" + totalConIgv);
+        System.out.println("\nGracias por su compra, " + cliente.getNombre() + "!");
+    }
+}
+Cambios y Explicación
+El cliente puede ingresar el nombre del producto:
+
+Ahora, en lugar de seleccionar los productos por un número, el cliente ingresa el nombre del producto directamente.
+Se realiza una búsqueda dentro de la lista de productos para ver si el nombre ingresado coincide con un producto disponible.
+Control de límite de productos:
+
+Se mantiene un máximo de 6 productos en el carrito de compras.
+Si el cliente alcanza el límite, se le notifica y el bucle se detiene.
+Estructura del código para seleccionar productos:
+
+Un bucle while permite al cliente seguir seleccionando productos hasta que escriba "salir" o alcance el límite de 6 productos.
+Si el producto ingresado no está en la lista, se muestra un mensaje de error.
+Recibo de pago:
+
+El recibo muestra el nombre del cliente, los productos comprados, el subtotal, el IGV (18%), y el total a pagar.
+También se muestra un mensaje de agradecimiento personalizado con el nombre del cliente.
+Ejemplo de ejecución
+yaml
+Copiar código
+Ingrese su nombre: Juan
+Ingrese su DNI: 12345678
+
+Productos disponibles:
+Laptop: S/1500.0
+Smartphone: S/800.0
+Camisa: S/50.0
+Pantalón: S/100.0
+Java para principiantes: S/30.0
+Programación avanzada: S/45.0
+Lego: S/60.0
+Silla: S/200.0
+
+Ingrese el nombre del producto que desea comprar (o escriba 'salir' para terminar): Laptop
+Producto agregado al carrito: Laptop
+
+Ingrese el nombre del producto que desea comprar (o escriba 'salir' para terminar): Camisa
+Producto agregado al carrito: Camisa
+
+Ingrese el nombre del producto que desea comprar (o escriba 'salir' para terminar): salir
+
+Recibo de pago:
+Cliente: Juan - DNI: 12345678
+Productos comprados:
+- Laptop: S/1500.0
+- Camisa: S/50.0
+Subtotal: S/1550.0
+IGV (18%): S/279.0
+Total a pagar: S/1829.0
+
+Gracias por su compra, Juan!
+Este código ahora permite que el cliente compre productos por nombre, mejorando la interacción con el sistema.
